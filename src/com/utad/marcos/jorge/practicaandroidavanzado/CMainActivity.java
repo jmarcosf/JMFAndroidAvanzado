@@ -13,10 +13,21 @@
 /**************************************************************/
 package com.utad.marcos.jorge.practicaandroidavanzado;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
@@ -43,6 +54,7 @@ private ImageView        m_Image             = null;
 private TextView         m_LocationInfo      = null;
 private Button           m_DismissPicture    = null;
 private Button           m_PublishToFacebook = null;
+private LocationManager  m_LocationManager   = null;
 
      /*********************************************************/
      /*                                                       */ 
@@ -70,6 +82,8 @@ private Button           m_PublishToFacebook = null;
           m_CapturePicture.setOnClickListener( this );
           m_DismissPicture.setOnClickListener( this );
           m_PublishToFacebook.setOnClickListener( this );
+          
+          m_LocationManager = (LocationManager)getSystemService( Context.LOCATION_SERVICE );
 
           SetControls( false );
      }
@@ -173,6 +187,78 @@ private Button           m_PublishToFacebook = null;
      /*********************************************************/
      public String GetLocationInfo()
      {
-          return "TODO: SetLocationInfo!";
+     String LocationInfo = null;
+     
+          Location CurrentLocation = null;
+          if( m_LocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
+          {
+               CurrentLocation = m_LocationManager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
+               LocationInfo = "Latitude: " + CurrentLocation.getLatitude() + "\r\nLongitude: " + CurrentLocation.getLatitude();
+               new CFindLocationInfo().execute( CurrentLocation );
+          }
+
+          return LocationInfo;
      }
+     
+     /*********************************************************/
+     /*                                                       */
+     /*                                                       */
+     /* CManiActivity.CFindLocationInfo AsyncTask Class       */
+     /*                                                       */
+     /*                                                       */
+     /*********************************************************/
+     private class CFindLocationInfo extends AsyncTask< Location, Void, String>
+     {
+          
+          /****************************************************/
+          /*                                                  */
+          /* CFindLocationInfo.doInBackground()               */
+          /*                                                  */
+          /****************************************************/
+          @Override
+          protected String doInBackground( Location... Params )
+          {
+               String    LocationString = null;
+
+               Geocoder geocoder = new Geocoder( CMainActivity.this, Locale.getDefault() );
+
+               Location CurrentLocation = Params[ 0 ];
+               List< Address > Addresses = null;
+               try
+               {
+                    Addresses = geocoder.getFromLocation( CurrentLocation.getLatitude(), CurrentLocation.getLongitude(), 1 );
+               }
+               catch( IOException e ) {}
+
+               if( Addresses != null && Addresses.size() > 0 )
+               {
+                    Address address = Addresses.get( 0 );
+                    // Format the first line of address (if available), city, and country name.
+                    LocationString = String.format("%s, %s, %s",
+                         address.getMaxAddressLineIndex() > 0 ? address.getAddressLine( 0 ) : "",
+                         address.getLocality(),
+                         address.getCountryName() );
+               }
+               return LocationString;
+          }
+          
+          /****************************************************/
+          /*                                                  */
+          /* CFindLocationInfo.onPostExecute()                */
+          /*                                                  */
+          /****************************************************/
+          @Override
+          protected void onPostExecute( String LocationInfo )
+          {
+               if( LocationInfo != null )
+               {
+                    m_LocationInfo.append( "\r\n" + LocationInfo );
+               }
+               else
+               {
+                    m_LocationInfo.append( "\r\n" + "Error reading Location Info" );
+               }
+          }
+      }
+
 }
