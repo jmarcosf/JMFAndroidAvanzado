@@ -21,13 +21,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
@@ -45,7 +46,7 @@ import android.widget.TextView;
 /*                                                            */ 
 /*                                                            */ 
 /**************************************************************/
-public class CMainActivity extends Activity implements OnClickListener
+public class CMainActivity extends Activity implements OnClickListener, CShakeDetector.OnShakeListener
 {
 private static final int CAPTURE_PICTURE_REQUEST_CODE = 100;
 
@@ -55,6 +56,9 @@ private TextView         m_LocationInfo      = null;
 private Button           m_DismissPicture    = null;
 private Button           m_PublishToFacebook = null;
 private LocationManager  m_LocationManager   = null;
+private SensorManager    m_SensorManager     = null;
+private Sensor           m_Accelerometer     = null;
+private CShakeDetector   m_ShakeDetector     = null;
 
      /*********************************************************/
      /*                                                       */ 
@@ -84,10 +88,39 @@ private LocationManager  m_LocationManager   = null;
           m_PublishToFacebook.setOnClickListener( this );
           
           m_LocationManager = (LocationManager)getSystemService( Context.LOCATION_SERVICE );
-
+          
+          m_SensorManager = (SensorManager)getSystemService( Context.SENSOR_SERVICE );
+          m_Accelerometer = m_SensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER );
+          m_ShakeDetector = new CShakeDetector();
+          m_ShakeDetector.setOnShakeListener( this );
+          
           SetControls( false );
      }
 
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onResume()                              */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onResume()
+     {
+          super.onResume();
+          m_SensorManager.registerListener( m_ShakeDetector, m_Accelerometer, SensorManager.SENSOR_DELAY_UI );
+     }
+  
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onPause()                               */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onPause()
+     {
+          m_SensorManager.unregisterListener( m_ShakeDetector );
+          super.onPause();
+     }
+     
      /*********************************************************/
      /*                                                       */ 
      /* CMainActivity.onCreateOptionsMenu()                   */ 
@@ -159,7 +192,24 @@ private LocationManager  m_LocationManager   = null;
                     break;
           }
      }
-     
+          
+     /*********************************************************/
+     /*                                                       */ 
+     /*                                                       */ 
+     /* CShakeDetector.OnShakeListener Interface Methods      */ 
+     /*                                                       */ 
+     /*                                                       */ 
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.OnShake()                               */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void OnShake( int count )
+     {
+          SetControls( false );
+     }
+
      /*********************************************************/
      /*                                                       */ 
      /*                                                       */ 
