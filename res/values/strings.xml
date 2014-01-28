@@ -18,4 +18,19 @@
     <string name="IDS_CAPTURE_PICTURE">Capture Picture</string>
     <string name="IDS_DISMISS">Dismiss Picture</string>
     <string name="IDS_PUBLISH_TO_FACEBOOK">Publish to Facebook</string>
+    
+	<!--**********************************************************/
+	/*                                                           */ 
+	/* Compass Directions Strings                                */ 
+	/*                                                           */ 
+	/***********************************************************-->
+	<string name="IDS_NORTH">NORTH</string>
+	<string name="IDS_NORTH_EAST">NORTH-EAST</string>
+	<string name="IDS_EAST">EAST</string>
+	<string name="IDS_SOUTH_EAST">SOUTH-EAST</string>
+	<string name="IDS_SOUTH">SOUTH</string>
+	<string name="IDS_SOUTH_WEST">SOUTH-WEST</string>
+	<string name="IDS_WEST">WEST</string>
+	<string name="IDS_NORTH_WEST">NORTH-WEST</string>
+    
 </resources>

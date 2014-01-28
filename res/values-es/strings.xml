@@ -17,4 +17,20 @@
     <string name="IDS_SETTIGNS">Preferencias</string>
     <string name="IDS_CAPTURE_PICTURE">Tomar Foto</string>
     <string name="IDS_DISMISS">Desechar Foto</string>
-    <string name="IDS_PUBLISH_TO_FACEBOOK">Publicar en Facebook</string></resources>
+    <string name="IDS_PUBLISH_TO_FACEBOOK">Publicar en Facebook</string>
+    
+	<!--**********************************************************/
+	/*                                                           */ 
+	/* Compass Directions Strings                                */ 
+	/*                                                           */ 
+	/***********************************************************-->
+	<string name="IDS_NORTH">NORTE</string>
+	<string name="IDS_NORTH_EAST">NORTESTE</string>
+	<string name="IDS_EAST">ESTE</string>
+	<string name="IDS_SOUTH_EAST">SUDESTE</string>
+	<string name="IDS_SOUTH">SUR</string>
+	<string name="IDS_SOUTH_WEST">SUDOESTE</string>
+	<string name="IDS_WEST">OESTE</string>
+	<string name="IDS_NORTH_WEST">NOROESTE</string>
+    
+</resources>

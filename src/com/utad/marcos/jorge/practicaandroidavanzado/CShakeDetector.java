@@ -105,7 +105,7 @@ private int                   m_Count;
                     m_Count++;
                     m_Listener.OnShake( m_Count );
                }
-           }
+          }
      }
      
      /*********************************************************/

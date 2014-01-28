@@ -22,6 +22,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -33,6 +35,8 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,19 +50,25 @@ import android.widget.TextView;
 /*                                                            */ 
 /*                                                            */ 
 /**************************************************************/
-public class CMainActivity extends Activity implements OnClickListener, CShakeDetector.OnShakeListener
+public class CMainActivity extends Activity implements OnClickListener, CShakeDetector.OnShakeListener, SensorEventListener
 {
 private static final int CAPTURE_PICTURE_REQUEST_CODE = 100;
 
 private Button           m_CapturePicture    = null;
 private ImageView        m_Image             = null;
 private TextView         m_LocationInfo      = null;
+private TextView         m_Degrees           = null;
+private ImageView        m_Compass           = null;
 private Button           m_DismissPicture    = null;
 private Button           m_PublishToFacebook = null;
+
 private LocationManager  m_LocationManager   = null;
 private SensorManager    m_SensorManager     = null;
 private Sensor           m_Accelerometer     = null;
 private CShakeDetector   m_ShakeDetector     = null;
+
+private float            m_CurrentDegree     = 0f;
+private String           m_CompassDirection  = "";
 
      /*********************************************************/
      /*                                                       */ 
@@ -80,6 +90,8 @@ private CShakeDetector   m_ShakeDetector     = null;
           m_CapturePicture = (Button)findViewById( R.id.IDC_BTN_CAPTURE_PICTURE );
           m_Image = (ImageView)findViewById( R.id.IDC_IMG_PREVIEW );
           m_LocationInfo = (TextView)findViewById( R.id.IDC_TXT_LOCATION );
+          m_Degrees = (TextView)findViewById( R.id.IDC_TXT_DEGREES );
+          m_Compass = (ImageView)findViewById( R.id.IDC_IMG_COMPASS );
           m_DismissPicture = (Button)findViewById( R.id.IDC_BTN_DISMISS );
           m_PublishToFacebook = (Button)findViewById( R.id.IDC_BTN_PUBLISH_TO_FACEBOOK );
 
@@ -107,6 +119,7 @@ private CShakeDetector   m_ShakeDetector     = null;
      {
           super.onResume();
           m_SensorManager.registerListener( m_ShakeDetector, m_Accelerometer, SensorManager.SENSOR_DELAY_UI );
+          m_SensorManager.registerListener( this, m_SensorManager.getDefaultSensor( Sensor.TYPE_ORIENTATION ), SensorManager.SENSOR_DELAY_GAME );
      }
   
      /*********************************************************/
@@ -117,6 +130,7 @@ private CShakeDetector   m_ShakeDetector     = null;
      @Override
      public void onPause()
      {
+          m_SensorManager.unregisterListener( this );
           m_SensorManager.unregisterListener( m_ShakeDetector );
           super.onPause();
      }
@@ -212,6 +226,50 @@ private CShakeDetector   m_ShakeDetector     = null;
 
      /*********************************************************/
      /*                                                       */ 
+     /* CMainActivity.onAccuracyChanged()                     */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onAccuracyChanged( Sensor arg0, int arg1 )
+     {
+     }
+
+     /*********************************************************/
+     /*                                                       */ 
+     /*                                                       */ 
+     /* SensorEventListener Interface Methods                 */ 
+     /*                                                       */ 
+     /*                                                       */ 
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onSensorChanged()                       */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onSensorChanged( SensorEvent event )
+     {
+          // get the angle around the z-axis rotated
+          float degree = Math.round( event.values[ 0 ] );
+
+          SetCompassDirection( degree );
+          m_Degrees.setText( "Heading: " + Float.toString( degree ) + " degrees\n" + m_CompassDirection );
+
+          // create a rotation animation (reverse turn degree degrees)
+          RotateAnimation rotateAnimation = new RotateAnimation( m_CurrentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f );
+
+          // how long the animation will take place
+          rotateAnimation.setDuration(210);
+
+          // set the animation after the end of the reservation status
+          rotateAnimation.setFillAfter(true);
+
+          // Start the animation
+          m_Compass.startAnimation( rotateAnimation );
+          m_CurrentDegree = -degree;
+     }
+
+     /*********************************************************/
+     /*                                                       */ 
      /*                                                       */ 
      /* Class Methods                                         */ 
      /*                                                       */ 
@@ -248,6 +306,20 @@ private CShakeDetector   m_ShakeDetector     = null;
           }
 
           return LocationInfo;
+     }
+     
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.SetCompassDirection()                   */ 
+     /*                                                       */ 
+     /*********************************************************/
+     public void SetCompassDirection( float Degrees )
+     {
+          int DirectionIds[] = { R.string.IDS_NORTH, R.string.IDS_NORTH_EAST, R.string.IDS_EAST,
+                                 R.string.IDS_SOUTH_EAST, R.string.IDS_SOUTH, R.string.IDS_SOUTH_WEST,
+                                 R.string.IDS_WEST, R.string.IDS_NORTH_WEST, R.string.IDS_NORTH };
+          int Index = (int)Math.round( ( ( (double)Degrees % 360 ) / 45) );
+          m_CompassDirection = getString( DirectionIds[ Index ] );
      }
      
      /*********************************************************/
@@ -310,5 +382,4 @@ private CShakeDetector   m_ShakeDetector     = null;
                }
           }
       }
-
 }
