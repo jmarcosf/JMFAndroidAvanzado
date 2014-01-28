@@ -1,0 +1,32 @@
+<!--**************************************************************/
+/*                                                               */ 
+/* styles.xml                                                    */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: Application Styles                               */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<resources>
+    
+	<!--**********************************************************/
+    /*                                                           */ 
+    /* Base application theme                                    */ 
+	/*                                                           */ 
+    /***********************************************************-->
+    <style name="IDR_APP_BASE_THEME" parent="android:Theme.Light">
+    </style>
+
+	<!--**********************************************************/
+    /*                                                           */ 
+    /* Application theme                                         */ 
+	/*                                                           */ 
+    /***********************************************************-->
+    <style name="IDR_APP_THEME" parent="IDR_APP_BASE_THEME">
+    </style>
+
+</resources>

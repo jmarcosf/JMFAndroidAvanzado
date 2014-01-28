@@ -1,0 +1,20 @@
+<!--**************************************************************/
+/*                                                               */ 
+/* menu_main.xml                                                 */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: Main Activity Menu                               */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/IDM_SETTIGNS"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/IDS_SETTINGS"/>
+</menu>

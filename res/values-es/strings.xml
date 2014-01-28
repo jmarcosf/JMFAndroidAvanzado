@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--**************************************************************/
+/*                                                               */ 
+/* strings.xml                                                   */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: Application Spanish Strings                      */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<resources>
+    <string name="IDS_APP_NAME">PracticaAndroidAvanzado</string>
+    <string name="IDS_SETTIGNS">Preferencias</string>
+    <string name="IDS_CAPTURE_PICTURE">Tomar Foto</string>
+    <string name="IDS_DISMISS">Desechar Foto</string>
+    <string name="IDS_PUBLISH_TO_FACEBOOK">Publicar en Facebook</string></resources>

@@ -1,0 +1,71 @@
+<!--**************************************************************/
+/*                                                               */ 
+/* layout_activity_main.xml                                      */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: Main Activity Layout                             */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/IDR_DIM_ACTIVITY_VERTICAL_MARGIN"
+    android:paddingLeft="@dimen/IDR_DIM_ACTIVITY_HORIZONTAL_MARGIN"
+    android:paddingRight="@dimen/IDR_DIM_ACTIVITY_HORIZONTAL_MARGIN"
+    android:paddingTop="@dimen/IDR_DIM_ACTIVITY_VERTICAL_MARGIN" >
+
+    <Button
+        android:id="@+id/IDC_BTN_CAPTURE_PICTURE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/IDS_CAPTURE_PICTURE" />
+
+    <ImageView 
+        android:id="@+id/IDC_IMG_PREVIEW"
+        android:layout_width="250dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/background_border" 
+        android:adjustViewBounds="true" />
+        
+    <TextView
+        android:id="@+id/IDC_TXT_LOCATION"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:orientation="horizontal"
+        android:layout_gravity="bottom" >
+        
+	    <Button
+	        android:id="@+id/IDC_BTN_DISMISS"
+	        android:layout_width="match_parent"
+	        android:layout_weight="1"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="20dp"
+	        android:paddingRight="20dp"
+	        android:text="@string/IDS_DISMISS"
+	        android:textSize="12dp" />
+	
+	    <Button
+	        android:id="@+id/IDC_BTN_PUBLISH_TO_FACEBOOK"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:paddingLeft="20dp"
+	        android:paddingRight="20dp"
+	        android:text="@string/IDS_PUBLISH_TO_FACEBOOK"
+	        android:textSize="12dp" />
+	    
+    </LinearLayout>
+    
+</LinearLayout>

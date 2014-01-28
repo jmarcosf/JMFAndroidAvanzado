@@ -1,0 +1,16 @@
+<!--**************************************************************/
+/*                                                               */ 
+/* dimens.xml                                                    */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: 700dp+ Application Screen Margins                */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<resources>
+    <dimen name="IDR_DIM_ACTIVITY_HORIZONTAL_MARGIN">128dp</dimen>
+</resources>
