@@ -12,9 +12,32 @@
 /*                                                               */ 
 /***************************************************************-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
     <item
-        android:id="@+id/IDM_SETTIGNS"
+        android:id="@+id/IDM_CAPTURE"
         android:orderInCategory="100"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="@string/IDS_CAPTURE"/>
+    
+    <item
+        android:id="@+id/IDM_DISMISS"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/IDS_DISMISS"/>
+    
+    <item
+        android:id="@+id/IDM_SHARE"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="@string/IDS_SHARE"/>
+    
+    <item
+        android:id="@+id/IDM_SETTINGS"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/IDS_SETTINGS"/>
 </menu>

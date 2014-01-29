@@ -27,21 +27,23 @@ import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -55,27 +57,34 @@ import com.google.android.gms.maps.model.MarkerOptions;
 /*                                                            */ 
 /*                                                            */ 
 /**************************************************************/
-public class CMainActivity extends android.support.v4.app.FragmentActivity implements OnClickListener, CShakeDetector.OnShakeListener, SensorEventListener
+public class CMainActivity extends android.support.v4.app.FragmentActivity implements OnClickListener, OnMapClickListener,
+                                                                                      CShakeDetector.OnShakeListener, SensorEventListener,
+                                                                                      LocationListener
 {
-private static final int CAPTURE_PICTURE_REQUEST_CODE = 100;
+private static final int CAPTURE_PICTURE_REQUEST_CODE  = 100;
+private static final int TEN_SECONDS                   = 10000;
+private static final int TEN_METERS                    = 10;
 
-private Button           m_CapturePicture    = null;
+private MenuItem         m_MenuCapture       = null;
+private MenuItem         m_MenuDismiss       = null;
+private MenuItem         m_MenuShare         = null;
+
 private ImageView        m_Image             = null;
+private TextView         m_Help              = null;
 private TextView         m_LocationInfo      = null;
 private TextView         m_Degrees           = null;
 private GoogleMap        m_Map               = null;
 private ImageView        m_Compass           = null;
-private Button           m_DismissPicture    = null;
-private Button           m_PublishToFacebook = null;
 
-private LocationManager  m_LocationManager   = null;
 private SensorManager    m_SensorManager     = null;
 private Sensor           m_Accelerometer     = null;
 private CShakeDetector   m_ShakeDetector     = null;
+private LocationManager  m_LocationManager   = null;
 
 private Location         m_CurrentLocation   = null;
-private float            m_CurrentDegree     = 0f;
+private int              m_CurrentDegrees    = 0;
 private String           m_CompassDirection  = "";
+private Bitmap           m_CurrentPicture    = null;
 
      /*********************************************************/
      /*                                                       */ 
@@ -94,28 +103,23 @@ private String           m_CompassDirection  = "";
           super.onCreate( savedInstanceState );
           setContentView( R.layout.layout_activity_main );
 
-          m_CapturePicture = (Button)findViewById( R.id.IDC_BTN_CAPTURE_PICTURE );
           m_Image = (ImageView)findViewById( R.id.IDC_IMG_PREVIEW );
+          m_Help = (TextView)findViewById( R.id.IDC_TXT_HELP );
           m_LocationInfo = (TextView)findViewById( R.id.IDC_TXT_LOCATION );
           m_Degrees = (TextView)findViewById( R.id.IDC_TXT_DEGREES );
           m_Map = ( (SupportMapFragment)getSupportFragmentManager().findFragmentById( R.id.IDC_MAP_LOCATIONMAP ) ).getMap();
-
           m_Compass = (ImageView)findViewById( R.id.IDC_IMG_COMPASS );
-          m_DismissPicture = (Button)findViewById( R.id.IDC_BTN_DISMISS );
-          m_PublishToFacebook = (Button)findViewById( R.id.IDC_BTN_PUBLISH_TO_FACEBOOK );
 
-          m_CapturePicture.setOnClickListener( this );
-          m_DismissPicture.setOnClickListener( this );
-          m_PublishToFacebook.setOnClickListener( this );
-          
-          m_LocationManager = (LocationManager)getSystemService( Context.LOCATION_SERVICE );
+          m_Image.setOnClickListener( this );
+          m_Map.setOnMapClickListener( this );
+          m_Map.getUiSettings().setAllGesturesEnabled( false );
           
           m_SensorManager = (SensorManager)getSystemService( Context.SENSOR_SERVICE );
           m_Accelerometer = m_SensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER );
           m_ShakeDetector = new CShakeDetector();
           m_ShakeDetector.setOnShakeListener( this );
           
-          SetControls( false );
+          m_LocationManager = (LocationManager)getSystemService( Context.LOCATION_SERVICE );
      }
 
      /*********************************************************/
@@ -129,6 +133,12 @@ private String           m_CompassDirection  = "";
           super.onResume();
           m_SensorManager.registerListener( m_ShakeDetector, m_Accelerometer, SensorManager.SENSOR_DELAY_UI );
           m_SensorManager.registerListener( this, m_SensorManager.getDefaultSensor( Sensor.TYPE_ORIENTATION ), SensorManager.SENSOR_DELAY_GAME );
+          if( m_LocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
+          {
+               m_CurrentLocation = m_LocationManager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
+               new CSetLocationInfo().execute( m_CurrentLocation );
+               m_LocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, TEN_SECONDS, TEN_METERS, this );
+          }
      }
   
      /*********************************************************/
@@ -139,6 +149,7 @@ private String           m_CompassDirection  = "";
      @Override
      public void onPause()
      {
+          m_LocationManager.removeUpdates( this );
           m_SensorManager.unregisterListener( this );
           m_SensorManager.unregisterListener( m_ShakeDetector );
           super.onPause();
@@ -153,9 +164,40 @@ private String           m_CompassDirection  = "";
      public boolean onCreateOptionsMenu( Menu menu )
      {
           getMenuInflater().inflate( R.menu.menu_main, menu );
+          m_MenuCapture = menu.getItem( 0 );
+          m_MenuDismiss = menu.getItem( 1 );
+          m_MenuShare = menu.getItem( 2 );
+          SetControls( false );
           return true;
      }
 
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onOptionsItemSelected()                 */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public boolean onOptionsItemSelected( MenuItem Item )
+     {
+          switch( Item.getItemId() )
+          {
+               case R.id.IDM_CAPTURE:
+                    Intent intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+                    startActivityForResult( intent, CAPTURE_PICTURE_REQUEST_CODE );
+                    return true;
+                    
+               case R.id.IDM_DISMISS:
+                    SetControls( false );
+                    return true;
+                    
+               case R.id.IDM_SHARE:
+                    return true;
+                    
+               default:
+                    return super.onOptionsItemSelected( Item );
+          }
+     }
+          
      /*********************************************************/
      /*                                                       */ 
      /* CMainActivity.onActivityResult()                      */ 
@@ -170,8 +212,7 @@ private String           m_CompassDirection  = "";
                {
                     case RESULT_OK:
                          Bundle Params = data.getExtras();
-                         Bitmap bitmap = (Bitmap)Params.get( "data" );
-                         m_Image.setImageBitmap( bitmap );
+                         m_CurrentPicture = (Bitmap)Params.get( "data" );
                          SetControls( true );
                          break;
                          
@@ -202,20 +243,30 @@ private String           m_CompassDirection  = "";
      {
           switch( view.getId() )
           {
-               case R.id.IDC_BTN_CAPTURE_PICTURE:
+               case R.id.IDC_IMG_PREVIEW:
                     Intent intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
                     startActivityForResult( intent, CAPTURE_PICTURE_REQUEST_CODE );
-                    break;
-                    
-               case R.id.IDC_BTN_DISMISS:
-                    SetControls( false );
-                    break;
-                    
-               case R.id.IDC_BTN_PUBLISH_TO_FACEBOOK:
                     break;
           }
      }
           
+
+     /*********************************************************/
+     /*                                                       */ 
+     /*                                                       */ 
+     /* OnMapClickListener Interface Methods                  */ 
+     /*                                                       */ 
+     /*                                                       */ 
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onMapClick()                            */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onMapClick( LatLng arg0 )
+     {
+     }
+     
      /*********************************************************/
      /*                                                       */ 
      /*                                                       */ 
@@ -258,13 +309,13 @@ private String           m_CompassDirection  = "";
      public void onSensorChanged( SensorEvent event )
      {
           // get the angle around the z-axis rotated
-          float degree = Math.round( event.values[ 0 ] );
+          int degrees = Math.round( event.values[ 0 ] );
 
-          SetCompassDirection( degree );
-          m_Degrees.setText( "Heading: " + Float.toString( degree ) + " degrees\n" + m_CompassDirection );
+          SetCompassDirection( degrees );
+          m_Degrees.setText( "" + degrees + "º (" + m_CompassDirection + ")" );
 
           // create a rotation animation (reverse turn degree degrees)
-          RotateAnimation rotateAnimation = new RotateAnimation( m_CurrentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f );
+          RotateAnimation rotateAnimation = new RotateAnimation( m_CurrentDegrees, -degrees, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f );
 
           // how long the animation will take place
           rotateAnimation.setDuration(210);
@@ -274,9 +325,57 @@ private String           m_CompassDirection  = "";
 
           // Start the animation
           m_Compass.startAnimation( rotateAnimation );
-          m_CurrentDegree = -degree;
+          m_CurrentDegrees = -degrees;
      }
 
+     /*********************************************************/
+     /*                                                       */ 
+     /*                                                       */ 
+     /* LocationListener Interface Methods                    */ 
+     /*                                                       */ 
+     /*                                                       */ 
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onLocationChanged()                     */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onLocationChanged( Location location )
+     {
+          m_CurrentLocation = location;
+          new CSetLocationInfo().execute( m_CurrentLocation );
+     }
+
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onProviderDisabled()                    */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onProviderDisabled( String arg0 )
+     {
+     }
+
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onProviderEnabled()                     */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onProviderEnabled( String arg0 )
+     {
+     }
+
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.onStatusChanged()                       */ 
+     /*                                                       */ 
+     /*********************************************************/
+     @Override
+     public void onStatusChanged( String arg0, int arg1, Bundle arg2 )
+     {
+     }
+     
      /*********************************************************/
      /*                                                       */ 
      /*                                                       */ 
@@ -290,31 +389,14 @@ private String           m_CompassDirection  = "";
      /*********************************************************/
      public void SetControls( boolean bReady )
      {
-          m_CapturePicture.setEnabled( !bReady );
-          if( !bReady ) m_Image.setImageBitmap( null );
-          m_LocationInfo.setText( ( bReady ) ? GetLocationInfo() : "" );
-          if( !bReady ) m_Map.clear();
-          m_DismissPicture.setEnabled( bReady );
-          m_PublishToFacebook.setEnabled( bReady );
-     }
-     
-     /*********************************************************/
-     /*                                                       */ 
-     /* CMainActivity.GetLocationInfo()                       */ 
-     /*                                                       */ 
-     /*********************************************************/
-     public String GetLocationInfo()
-     {
-     String LocationInfo = null;
-     
-          if( m_LocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
-          {
-               m_CurrentLocation = m_LocationManager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
-               LocationInfo = "Latitude: " + m_CurrentLocation.getLatitude() + "\r\nLongitude: " + m_CurrentLocation.getLatitude();
-               new CFindLocationInfo().execute( m_CurrentLocation );
-          }
+          if( m_MenuCapture != null ) m_MenuCapture.setEnabled( !bReady );
+          if( m_MenuDismiss != null ) m_MenuDismiss.setEnabled( bReady );
+          if( m_MenuShare   != null ) m_MenuShare.setEnabled( bReady );
 
-          return LocationInfo;
+          if( !bReady ) m_CurrentPicture = null;
+          m_Image.setImageBitmap( m_CurrentPicture );
+          m_Image.setClickable( !bReady );
+          m_Help.setVisibility( bReady ? View.GONE : View.VISIBLE );
      }
      
      /*********************************************************/
@@ -322,7 +404,7 @@ private String           m_CompassDirection  = "";
      /* CMainActivity.SetCompassDirection()                   */ 
      /*                                                       */ 
      /*********************************************************/
-     public void SetCompassDirection( float Degrees )
+     public void SetCompassDirection( int Degrees )
      {
           int DirectionIds[] = { R.string.IDS_NORTH, R.string.IDS_NORTH_EAST, R.string.IDS_EAST,
                                  R.string.IDS_SOUTH_EAST, R.string.IDS_SOUTH, R.string.IDS_SOUTH_WEST,
@@ -334,16 +416,16 @@ private String           m_CompassDirection  = "";
      /*********************************************************/
      /*                                                       */
      /*                                                       */
-     /* CManiActivity.CFindLocationInfo AsyncTask Class       */
+     /* CManiActivity.CSetLocationInfo AsyncTask Class        */
      /*                                                       */
      /*                                                       */
      /*********************************************************/
-     private class CFindLocationInfo extends AsyncTask< Location, Void, String>
+     private class CSetLocationInfo extends AsyncTask< Location, Void, String>
      {
           
           /****************************************************/
           /*                                                  */
-          /* CFindLocationInfo.doInBackground()               */
+          /* CSetLocationInfo.doInBackground()                */
           /*                                                  */
           /****************************************************/
           @Override
@@ -375,7 +457,7 @@ private String           m_CompassDirection  = "";
           
           /****************************************************/
           /*                                                  */
-          /* CFindLocationInfo.onPostExecute()                */
+          /* CSetLocationInfo.onPostExecute()                 */
           /*                                                  */
           /****************************************************/
           @Override
@@ -383,21 +465,12 @@ private String           m_CompassDirection  = "";
           {
                if( LocationInfo != null )
                {
-                    m_LocationInfo.append( "\r\n" + LocationInfo );
+                    m_LocationInfo.setText( "Latitude: " + m_CurrentLocation.getLatitude() + "\r\nLongitude: " + m_CurrentLocation.getLatitude() + "\r\n" + LocationInfo );
                     LatLng Position = new LatLng( m_CurrentLocation.getLatitude(), m_CurrentLocation.getLongitude() );
-//                    CameraPosition CameraPosition = new CameraPosition.Builder()
-//                         .target( Position )
-//                         .zoom( 15.5f )
-//                         .bearing( 0 )
-//                         .tilt( 25 )
-//                         .build();
                     m_Map.addMarker( new MarkerOptions().position( Position ).title( "Marker" ) );
                     m_Map.moveCamera( CameraUpdateFactory.newLatLngZoom( Position, 10) );
                }
-               else
-               {
-                    m_LocationInfo.append( "\r\n" + "Error reading Location Info" );
-               }
+               else m_LocationInfo.setText( "" );
           }
       }
 }

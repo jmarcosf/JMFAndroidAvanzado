@@ -14,10 +14,11 @@
 /***************************************************************-->
 <resources>
     <string name="IDS_APP_NAME">PracticaAndroidAvanzado</string>
-    <string name="IDS_SETTIGNS">Preferencias</string>
-    <string name="IDS_CAPTURE_PICTURE">Tomar Foto</string>
-    <string name="IDS_DISMISS">Desechar Foto</string>
-    <string name="IDS_PUBLISH_TO_FACEBOOK">Compartir</string>
+    <string name="IDS_SETTINGS">Preferencias</string>
+    <string name="IDS_SHARE">Compartir</string>
+    <string name="IDS_CAPTURE">Capturar</string>
+    <string name="IDS_DISMISS">Desechar</string>
+    <string name="IDS_HELP">Pulse aquí para tomar una foto.\nSacuda el dispositivo para desechar la foto.\nO utilice las opiones del Menú.</string>
     
 	<!--**********************************************************/
 	/*                                                           */ 

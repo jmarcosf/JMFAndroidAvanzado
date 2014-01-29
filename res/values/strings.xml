@@ -15,9 +15,10 @@
 <resources>
     <string name="IDS_APP_NAME">PracticaAndroidAvanzado</string>
     <string name="IDS_SETTINGS">Settings</string>
-    <string name="IDS_CAPTURE_PICTURE">Capture Picture</string>
-    <string name="IDS_DISMISS">Dismiss Picture</string>
-    <string name="IDS_PUBLISH_TO_FACEBOOK">Share</string>
+    <string name="IDS_SHARE">Share</string>
+    <string name="IDS_CAPTURE_PICTURE">Capture</string>
+    <string name="IDS_DISMISS">Dismiss</string>
+    <string name="IDS_HELP">Tap here to take a picture.\n\nShake your device to dismiss picture.\n\nOr you can also use Menu Items.</string>
     
 	<!--**********************************************************/
 	/*                                                           */ 

@@ -19,122 +19,88 @@
     android:paddingRight="@dimen/IDR_DIM_ACTIVITY_HORIZONTAL_MARGIN"
     android:paddingTop="@dimen/IDR_DIM_ACTIVITY_VERTICAL_MARGIN" >
 
-    <LinearLayout 
-        android:id="@+id/IDR_LAY_WORK_BUTTONS"
-        android:layout_width="match_parent"
-        android:layout_height="100dp" 
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true" >
-        
-	    <Button
-	        android:id="@+id/IDC_BTN_CAPTURE_PICTURE"
-		        android:layout_width="0dp"
-		        android:layout_height="wrap_content"
-		        android:layout_weight="1"
-		        android:layout_gravity="center"
-		        android:paddingLeft="20dp"
-		        android:paddingRight="20dp"
-	    	    android:text="@string/IDS_CAPTURE_PICTURE"
-		        android:textSize="16sp" />
-	    
-	    <Button
-	        android:id="@+id/IDC_BTN_DISMISS"
-	        android:layout_width="0dp"
+    <RelativeLayout
+        android:id="@+id/IDR_LAY_PREVIEW"
+        android:layout_width="248dp"
+        android:layout_height="330dp"
+        android:background="@drawable/background_border" >
+                     
+	    <ImageView 
+	        android:id="@+id/IDC_IMG_PREVIEW"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:adjustViewBounds="true"
+	        android:layout_margin="1dp"
+	        android:background="#E0E0E0" />
+	            
+	    <TextView
+	        android:id="@+id/IDC_TXT_HELP"
+	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:layout_gravity="center"
-	        android:paddingLeft="20dp"
-	        android:paddingRight="20dp"
-	        android:text="@string/IDS_DISMISS"
-	        android:textSize="16sp" />
-	
-	    <Button
-	        android:id="@+id/IDC_BTN_PUBLISH_TO_FACEBOOK"
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:layout_gravity="center"
-	        android:paddingLeft="20dp"
-	        android:paddingRight="20dp"
-	        android:text="@string/IDS_PUBLISH_TO_FACEBOOK"
-	        android:textSize="16sp" />
-	    
-    </LinearLayout>
+	        android:layout_margin="1dp"
+	        android:textColor="#909090"
+	        android:text="@string/IDS_HELP"
+	        android:gravity="center"
+	        android:layout_centerInParent="true"
+	        android:textSize="12sp"
+	        android:clickable="false" />
+		    
+   	</RelativeLayout>
     
-    <LinearLayout 
-        android:id="@+id/IDR_LAY_LOCATION_INFO"
+    <RelativeLayout
+        android:id="@+id/IDR_LAY_COMPASS"
         android:layout_width="match_parent"
-        android:layout_height="150dp" 
-        android:orientation="horizontal"
+        android:layout_height="330dp"
+        android:layout_toRightOf="@+id/IDR_LAY_PREVIEW" >
+	    
+	    <TextView
+	        android:id="@+id/IDC_TXT_DEGREES"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_centerInParent="true" />
+		    
+   	    <ImageView
+	        android:id="@+id/IDC_IMG_COMPASS"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_margin="20dp"
+	        android:layout_above="@id/IDC_TXT_DEGREES"
+	        android:src="@drawable/image_compass" />
+	        	        
+	    <ImageView
+	        android:id="@+id/IDC_IMG_COMPASS_NEEDLE"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+			android:padding="55dp"
+	        android:layout_above="@id/IDC_TXT_DEGREES"
+	        android:src="@drawable/image_compass_needle" />
+	        	        
+    </RelativeLayout>
+	    
+   
+    <TextView
+        android:id="@+id/IDC_TXT_LOCATION"
+        android:layout_width="match_parent"
+        android:layout_height="120dp" 
+   		android:layout_below="@id/IDR_LAY_PREVIEW"
+   		android:gravity="bottom"
 		android:paddingTop="15dp"
-        android:layout_above="@+id/IDR_LAY_WORK_BUTTONS">
-	    
-        <RelativeLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:layout_weight="1.5" >
-            
-		    <TextView
-		        android:id="@+id/IDC_TXT_LOCATION"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content" />
-	    
-		    <TextView
-		        android:id="@+id/IDC_TXT_DEGREES"
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentBottom="true" />
-		    
-	    </RelativeLayout>
-
-		<fragment 
-		  	android:id="@+id/IDC_MAP_LOCATIONMAP"
-	        android:layout_width="0dp"
-	        android:layout_height="match_parent"
-			android:padding="2dp"
-	        android:layout_weight="1.5"
-		  	class="com.google.android.gms.maps.SupportMapFragment"/>
-        
-	    <RelativeLayout
-	        android:layout_width="0dp"
-	        android:layout_height="match_parent"
-	        android:layout_weight="1" >
-		    
-		    <ImageView
-		        android:id="@+id/IDC_IMG_COMPASS"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-		        android:src="@drawable/image_compass" />
-		        	        
-		    <ImageView
-		        android:id="@+id/IDC_IMG_COMPASS_NEEDLE"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-		        android:padding="20dp"
-		        android:src="@drawable/image_compass_needle" />
-		        	        
-   	    </RelativeLayout>
-	    
-    </LinearLayout>
-
-    <View
-        android:id="@+id/IDR_PICTURE_SEPARATOR"
-      	android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#C0C0C0"
-        android:layout_marginBottom="10dp"
-        android:layout_above="@id/IDR_LAY_LOCATION_INFO"/>
-
-    <ImageView 
-        android:id="@+id/IDC_IMG_PREVIEW"
+		android:paddingBottom="15dp" />
+    	
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_above="@id/IDR_PICTURE_SEPARATOR"
-        android:layout_marginBottom="10dp"
-        android:adjustViewBounds="true" />
+        android:layout_below="@id/IDC_TXT_LOCATION"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/background_border" >
     
+	   	<fragment
+		  	android:id="@+id/IDC_MAP_LOCATIONMAP"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_margin="2dp"
+		  	class="com.google.android.gms.maps.SupportMapFragment" />
+   	</FrameLayout>
+   	
 </RelativeLayout>
