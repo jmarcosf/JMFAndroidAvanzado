@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -41,6 +40,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 /**************************************************************/
 /*                                                            */ 
 /*                                                            */ 
@@ -50,7 +55,7 @@ import android.widget.TextView;
 /*                                                            */ 
 /*                                                            */ 
 /**************************************************************/
-public class CMainActivity extends Activity implements OnClickListener, CShakeDetector.OnShakeListener, SensorEventListener
+public class CMainActivity extends android.support.v4.app.FragmentActivity implements OnClickListener, CShakeDetector.OnShakeListener, SensorEventListener
 {
 private static final int CAPTURE_PICTURE_REQUEST_CODE = 100;
 
@@ -58,6 +63,7 @@ private Button           m_CapturePicture    = null;
 private ImageView        m_Image             = null;
 private TextView         m_LocationInfo      = null;
 private TextView         m_Degrees           = null;
+private GoogleMap        m_Map               = null;
 private ImageView        m_Compass           = null;
 private Button           m_DismissPicture    = null;
 private Button           m_PublishToFacebook = null;
@@ -67,6 +73,7 @@ private SensorManager    m_SensorManager     = null;
 private Sensor           m_Accelerometer     = null;
 private CShakeDetector   m_ShakeDetector     = null;
 
+private Location         m_CurrentLocation   = null;
 private float            m_CurrentDegree     = 0f;
 private String           m_CompassDirection  = "";
 
@@ -91,6 +98,8 @@ private String           m_CompassDirection  = "";
           m_Image = (ImageView)findViewById( R.id.IDC_IMG_PREVIEW );
           m_LocationInfo = (TextView)findViewById( R.id.IDC_TXT_LOCATION );
           m_Degrees = (TextView)findViewById( R.id.IDC_TXT_DEGREES );
+          m_Map = ( (SupportMapFragment)getSupportFragmentManager().findFragmentById( R.id.IDC_MAP_LOCATIONMAP ) ).getMap();
+
           m_Compass = (ImageView)findViewById( R.id.IDC_IMG_COMPASS );
           m_DismissPicture = (Button)findViewById( R.id.IDC_BTN_DISMISS );
           m_PublishToFacebook = (Button)findViewById( R.id.IDC_BTN_PUBLISH_TO_FACEBOOK );
@@ -284,6 +293,7 @@ private String           m_CompassDirection  = "";
           m_CapturePicture.setEnabled( !bReady );
           if( !bReady ) m_Image.setImageBitmap( null );
           m_LocationInfo.setText( ( bReady ) ? GetLocationInfo() : "" );
+          if( !bReady ) m_Map.clear();
           m_DismissPicture.setEnabled( bReady );
           m_PublishToFacebook.setEnabled( bReady );
      }
@@ -297,12 +307,11 @@ private String           m_CompassDirection  = "";
      {
      String LocationInfo = null;
      
-          Location CurrentLocation = null;
           if( m_LocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
           {
-               CurrentLocation = m_LocationManager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
-               LocationInfo = "Latitude: " + CurrentLocation.getLatitude() + "\r\nLongitude: " + CurrentLocation.getLatitude();
-               new CFindLocationInfo().execute( CurrentLocation );
+               m_CurrentLocation = m_LocationManager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
+               LocationInfo = "Latitude: " + m_CurrentLocation.getLatitude() + "\r\nLongitude: " + m_CurrentLocation.getLatitude();
+               new CFindLocationInfo().execute( m_CurrentLocation );
           }
 
           return LocationInfo;
@@ -375,6 +384,15 @@ private String           m_CompassDirection  = "";
                if( LocationInfo != null )
                {
                     m_LocationInfo.append( "\r\n" + LocationInfo );
+                    LatLng Position = new LatLng( m_CurrentLocation.getLatitude(), m_CurrentLocation.getLongitude() );
+//                    CameraPosition CameraPosition = new CameraPosition.Builder()
+//                         .target( Position )
+//                         .zoom( 15.5f )
+//                         .bearing( 0 )
+//                         .tilt( 25 )
+//                         .build();
+                    m_Map.addMarker( new MarkerOptions().position( Position ).title( "Marker" ) );
+                    m_Map.moveCamera( CameraUpdateFactory.newLatLngZoom( Position, 10) );
                }
                else
                {
