@@ -23,7 +23,7 @@
 	/*                                                           */ 
     /***********************************************************-->
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="12"
         android:targetSdkVersion="19" />
 
     <!--**********************************************************/
@@ -89,7 +89,53 @@
             </intent-filter>
         </activity>
         
-   		<!--******************************************************/
+        <!--******************************************************/
+	    /*                                                       */
+	    /* Picture Details Activity                              */
+	    /*                                                       */
+	    /*******************************************************-->
+        <activity
+            android:name="com.utad.marcos.jorge.practicaandroidavanzado.CPictureDetailsActivity"
+            android:parentActivityName="com.utad.marcos.jorge.practicaandroidavanzado.CMainActivity" >
+        </activity>
+        
+        <!--******************************************************/
+	    /*                                                       */
+	    /* Location Details Activity                             */
+	    /*                                                       */
+	    /*******************************************************-->
+        <activity
+            android:name="com.utad.marcos.jorge.practicaandroidavanzado.CLocationDetailsActivity"
+            android:parentActivityName="com.utad.marcos.jorge.practicaandroidavanzado.CMainActivity" >
+        </activity>
+
+        <!--******************************************************/
+	    /*                                                       */
+	    /* Facebook Activity                                     */
+	    /*                                                       */
+	    /*******************************************************-->
+        <activity
+            android:name="com.utad.marcos.jorge.practicaandroidavanzado.CFacebookActivity"
+            android:parentActivityName="com.utad.marcos.jorge.practicaandroidavanzado.CMainActivity" >
+        </activity>
+
+        <!--******************************************************/
+	    /*                                                       */
+	    /* Facebook Login Activity                               */
+	    /*                                                       */
+	    /*******************************************************-->
+        <activity android:name="com.facebook.LoginActivity" />
+        
+        <!--******************************************************/
+	    /*                                                       */ 
+	    /* Facebook App Id                                       */ 
+		/*                                                       */ 
+	    /*******************************************************-->
+        <meta-data
+			android:name="com.facebook.sdk.ApplicationId"
+			android:value="@string/IDS_FACEBOOK_APP_ID" />
+        
+        <!--******************************************************/
 	    /*                                                       */ 
 	    /* Google Maps v2 Api Key                                */ 
 		/*                                                       */ 

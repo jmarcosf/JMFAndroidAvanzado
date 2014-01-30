@@ -13,11 +13,14 @@
 /**************************************************************/
 package com.utad.marcos.jorge.practicaandroidavanzado;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
@@ -65,26 +68,28 @@ private static final int CAPTURE_PICTURE_REQUEST_CODE  = 100;
 private static final int TEN_SECONDS                   = 10000;
 private static final int TEN_METERS                    = 10;
 
-private MenuItem         m_MenuCapture       = null;
-private MenuItem         m_MenuDismiss       = null;
-private MenuItem         m_MenuShare         = null;
+private MenuItem         m_MenuCapture            = null;
+private MenuItem         m_MenuDismiss            = null;
+private MenuItem         m_MenuShare              = null;
 
-private ImageView        m_Image             = null;
-private TextView         m_Help              = null;
-private TextView         m_LocationInfo      = null;
-private TextView         m_Degrees           = null;
-private GoogleMap        m_Map               = null;
-private ImageView        m_Compass           = null;
+private ImageView        m_Picture                = null;
+private TextView         m_Help                   = null;
+private ImageView        m_Compass                = null;
+private TextView         m_Degrees                = null;
+private TextView         m_LocationInfo           = null;
+private ImageView        m_Facebook               = null;
+private GoogleMap        m_Map                    = null;
 
-private SensorManager    m_SensorManager     = null;
-private Sensor           m_Accelerometer     = null;
-private CShakeDetector   m_ShakeDetector     = null;
-private LocationManager  m_LocationManager   = null;
+private SensorManager    m_SensorManager          = null;
+private Sensor           m_Accelerometer          = null;
+private CShakeDetector   m_ShakeDetector          = null;
+private LocationManager  m_LocationManager        = null;
 
-private Location         m_CurrentLocation   = null;
-private int              m_CurrentDegrees    = 0;
-private String           m_CompassDirection  = "";
-private Bitmap           m_CurrentPicture    = null;
+private Location         m_CurrentLocation        = null;
+private int              m_CurrentDegrees         = 0;
+private Bitmap           m_CurrentPicture         = null;
+private String           m_CompassDirection       = "";
+private String           m_CurrentLocationInfo    = null;
 
      /*********************************************************/
      /*                                                       */ 
@@ -103,14 +108,16 @@ private Bitmap           m_CurrentPicture    = null;
           super.onCreate( savedInstanceState );
           setContentView( R.layout.layout_activity_main );
 
-          m_Image = (ImageView)findViewById( R.id.IDC_IMG_PREVIEW );
+          m_Picture = (ImageView)findViewById( R.id.IDC_IMG_PREVIEW );
           m_Help = (TextView)findViewById( R.id.IDC_TXT_HELP );
-          m_LocationInfo = (TextView)findViewById( R.id.IDC_TXT_LOCATION );
-          m_Degrees = (TextView)findViewById( R.id.IDC_TXT_DEGREES );
-          m_Map = ( (SupportMapFragment)getSupportFragmentManager().findFragmentById( R.id.IDC_MAP_LOCATIONMAP ) ).getMap();
           m_Compass = (ImageView)findViewById( R.id.IDC_IMG_COMPASS );
+          m_Degrees = (TextView)findViewById( R.id.IDC_TXT_DEGREES );
+          m_LocationInfo = (TextView)findViewById( R.id.IDC_TXT_LOCATION );
+          m_Facebook = (ImageView)findViewById( R.id.IDC_IMG_FACEBOOK );
+          m_Map = ( (SupportMapFragment)getSupportFragmentManager().findFragmentById( R.id.IDC_MAP_LOCATIONMAP ) ).getMap();
 
-          m_Image.setOnClickListener( this );
+          m_Picture.setOnClickListener( this );
+          m_Facebook.setOnClickListener( this );
           m_Map.setOnMapClickListener( this );
           m_Map.getUiSettings().setAllGesturesEnabled( false );
           
@@ -131,8 +138,10 @@ private Bitmap           m_CurrentPicture    = null;
      public void onResume()
      {
           super.onResume();
+          
           m_SensorManager.registerListener( m_ShakeDetector, m_Accelerometer, SensorManager.SENSOR_DELAY_UI );
           m_SensorManager.registerListener( this, m_SensorManager.getDefaultSensor( Sensor.TYPE_ORIENTATION ), SensorManager.SENSOR_DELAY_GAME );
+          
           if( m_LocationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
           {
                m_CurrentLocation = m_LocationManager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
@@ -179,10 +188,12 @@ private Bitmap           m_CurrentPicture    = null;
      @Override
      public boolean onOptionsItemSelected( MenuItem Item )
      {
+     Intent    intent = null;
+     
           switch( Item.getItemId() )
           {
                case R.id.IDM_CAPTURE:
-                    Intent intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+                    intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
                     startActivityForResult( intent, CAPTURE_PICTURE_REQUEST_CODE );
                     return true;
                     
@@ -191,6 +202,11 @@ private Bitmap           m_CurrentPicture    = null;
                     return true;
                     
                case R.id.IDM_SHARE:
+                    if( m_CurrentPicture != null )
+                    {
+                         intent = new Intent( this, CFacebookActivity.class);
+                         startActivity( intent );
+                    }
                     return true;
                     
                default:
@@ -221,7 +237,6 @@ private Bitmap           m_CurrentPicture    = null;
                          break;
                          
                     default:
-                         //TODO: Show Error Dialog
                          break;
                }
           }
@@ -244,12 +259,53 @@ private Bitmap           m_CurrentPicture    = null;
           switch( view.getId() )
           {
                case R.id.IDC_IMG_PREVIEW:
-                    Intent intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
-                    startActivityForResult( intent, CAPTURE_PICTURE_REQUEST_CODE );
+                    if( m_CurrentPicture == null )
+                    {
+                         Intent intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+                         startActivityForResult( intent, CAPTURE_PICTURE_REQUEST_CODE );
+                    }
+                    else
+                    {
+                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                         m_CurrentPicture.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                         byte[] byteArray = stream.toByteArray();   
+                         
+                         Intent intent = new Intent( this, CPictureDetailsActivity.class );
+                         intent.putExtra( CPictureDetailsActivity.IDS_PICTURE_PARAM, byteArray );
+                         startActivity( intent );
+                    }
+                    break;
+                    
+               case R.id.IDC_IMG_FACEBOOK:
+                    if( m_CurrentPicture != null )
+                    {
+                         new AlertDialog.Builder( this )
+                              .setTitle( R.string.IDS_POST_CONFIRMATION_TITLE )
+                              .setMessage( R.string.IDS_POST_CONFIRMATION_MESSAGE )
+                              .setPositiveButton( R.string.IDS_YES, new DialogInterface.OnClickListener()
+                              {
+                                   @Override
+                                   public void onClick( DialogInterface dialogInterface, int i )
+                                   {
+                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                        m_CurrentPicture.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                                        byte[] byteArray = stream.toByteArray();   
+                                        
+                                        Intent intent = new Intent( CMainActivity.this, CFacebookActivity.class );
+                                        intent.putExtra( CFacebookActivity.IDS_PICTURE_PARAM, byteArray );
+                                        intent.putExtra( CFacebookActivity.IDS_DEGREES_PARAM, m_CurrentDegrees );
+                                        intent.putExtra( CFacebookActivity.IDS_DIRECTION_PARAM, m_CompassDirection );
+                                        intent.putExtra( CFacebookActivity.IDS_LOCATION_PARAM, m_CurrentLocationInfo );
+                                        startActivity( intent );
+                                   }
+                              } )
+                              .setNegativeButton( R.string.IDS_NO, null )
+                              .setIcon( R.drawable.image_facebook )
+                              .show();
+                    }
                     break;
           }
      }
-          
 
      /*********************************************************/
      /*                                                       */ 
@@ -263,8 +319,12 @@ private Bitmap           m_CurrentPicture    = null;
      /*                                                       */ 
      /*********************************************************/
      @Override
-     public void onMapClick( LatLng arg0 )
+     public void onMapClick( LatLng location )
      {
+          Intent intent = new Intent( CMainActivity.this, CLocationDetailsActivity.class );
+          intent.putExtra( CLocationDetailsActivity.IDS_LATITUDE_PARAM, m_CurrentLocation.getLatitude() );
+          intent.putExtra( CLocationDetailsActivity.IDS_LONGITUDE_PARAM, m_CurrentLocation.getLongitude() );
+          startActivity( intent );
      }
      
      /*********************************************************/
@@ -394,9 +454,10 @@ private Bitmap           m_CurrentPicture    = null;
           if( m_MenuShare   != null ) m_MenuShare.setEnabled( bReady );
 
           if( !bReady ) m_CurrentPicture = null;
-          m_Image.setImageBitmap( m_CurrentPicture );
-          m_Image.setClickable( !bReady );
+          m_Picture.setImageBitmap( m_CurrentPicture );
           m_Help.setVisibility( bReady ? View.GONE : View.VISIBLE );
+          m_Facebook.setClickable( bReady );
+          m_Facebook.setVisibility( bReady ? View.VISIBLE : View.GONE );
      }
      
      /*********************************************************/
@@ -463,9 +524,11 @@ private Bitmap           m_CurrentPicture    = null;
           @Override
           protected void onPostExecute( String LocationInfo )
           {
+               m_CurrentLocationInfo = null;
                if( LocationInfo != null )
                {
-                    m_LocationInfo.setText( "Latitude: " + m_CurrentLocation.getLatitude() + "\r\nLongitude: " + m_CurrentLocation.getLatitude() + "\r\n" + LocationInfo );
+                    m_CurrentLocationInfo = "Latitude: " + m_CurrentLocation.getLatitude() + "\r\nLongitude: " + m_CurrentLocation.getLongitude() + "\r\n" + LocationInfo;
+                    m_LocationInfo.setText( m_CurrentLocationInfo );
                     LatLng Position = new LatLng( m_CurrentLocation.getLatitude(), m_CurrentLocation.getLongitude() );
                     m_Map.addMarker( new MarkerOptions().position( Position ).title( "Marker" ) );
                     m_Map.moveCamera( CameraUpdateFactory.newLatLngZoom( Position, 10) );

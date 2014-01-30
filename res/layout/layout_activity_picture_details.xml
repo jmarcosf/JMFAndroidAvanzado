@@ -1,0 +1,28 @@
+<!--**************************************************************/
+/*                                                               */ 
+/* layout_activity_picture_details.xml                           */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: Picture Details Activity Layout                  */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:paddingBottom="@dimen/IDR_DIM_ACTIVITY_VERTICAL_MARGIN"
+    android:paddingLeft="@dimen/IDR_DIM_ACTIVITY_HORIZONTAL_MARGIN"
+    android:paddingRight="@dimen/IDR_DIM_ACTIVITY_HORIZONTAL_MARGIN"
+    android:paddingTop="@dimen/IDR_DIM_ACTIVITY_VERTICAL_MARGIN" >
+
+    <ImageView 
+        android:id="@+id/IDC_IMG_PREVIEW"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true" />
+            
+</RelativeLayout>

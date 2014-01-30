@@ -14,11 +14,21 @@
 /***************************************************************-->
 <resources>
     <string name="IDS_APP_NAME">PracticaAndroidAvanzado</string>
+    <string name="IDS_YES">Si</string>
+    <string name="IDS_NO">No</string>
     <string name="IDS_SETTINGS">Preferencias</string>
     <string name="IDS_SHARE">Compartir</string>
     <string name="IDS_CAPTURE">Capturar</string>
     <string name="IDS_DISMISS">Desechar</string>
     <string name="IDS_HELP">Pulse aquí para tomar una foto.\nSacuda el dispositivo para desechar la foto.\nO utilice las opiones del Menú.</string>
+    <string name="IDS_POST_CONFIRMATION_TITLE">Subir a Facebook</string>
+    <string name="IDS_POST_CONFIRMATION_MESSAGE">Vas a subir a Facebook esta foto.\nQuieres continuar?</string>
+    <string name="IDS_POST_TO_FACEBOOK_TITLE">Subir a Facebook</string>
+    <string name="IDS_POSTING_TO_FACEBOOK_MESSAGE">Subiendo a Facebook&#8230;</string>
+    <string name="IDS_POSTING_INFO_MESSAGE">Subiendo la información de la foto&#8230;</string>
+    <string name="IDS_POSTING_PICTURE_MESSAGE">Subiendo la foto&#8230;</string>    
+    <string name="IDS_CONNECTING_TO_FACEBOOK_MESSAGE">Conectandog&#8230;</string>
+    <string name="IDS_POST_TO_FACEBOOK_SUCCESS">La foto se ha subido a Facebook correctamente!</string>
     
 	<!--**********************************************************/
 	/*                                                           */ 

@@ -14,11 +14,22 @@
 /***************************************************************-->
 <resources>
     <string name="IDS_APP_NAME">PracticaAndroidAvanzado</string>
+    <string name="IDS_YES">Yes</string>
+    <string name="IDS_NO">No</string>
     <string name="IDS_SETTINGS">Settings</string>
     <string name="IDS_SHARE">Share</string>
+    <string name="IDS_FACEBOOK_APP_ID">577674018984013</string>
     <string name="IDS_CAPTURE_PICTURE">Capture</string>
     <string name="IDS_DISMISS">Dismiss</string>
     <string name="IDS_HELP">Tap here to take a picture.\n\nShake your device to dismiss picture.\n\nOr you can also use Menu Items.</string>
+    <string name="IDS_POST_CONFIRMATION_TITLE">Post to Facebook</string>
+    <string name="IDS_POST_CONFIRMATION_MESSAGE">You are about to publish this picture to Facebook.\nDo you want to continue?</string>
+    <string name="IDS_POST_TO_FACEBOOK_TITLE">Post to Facebook</string>
+    <string name="IDS_POSTING_TO_FACEBOOK_MESSAGE">Posting to Facebook&#8230;</string>
+    <string name="IDS_POSTING_INFO_MESSAGE">Posting picture info&#8230;</string>
+    <string name="IDS_POSTING_PICTURE_MESSAGE">Posting picture&#8230;</string>
+    <string name="IDS_CONNECTING_TO_FACEBOOK_MESSAGE">Connecting&#8230;</string>
+    <string name="IDS_POST_TO_FACEBOOK_SUCCESS">Picture posted to Facebook successfully!</string>
     
 	<!--**********************************************************/
 	/*                                                           */ 
