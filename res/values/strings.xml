@@ -14,6 +14,7 @@
 /***************************************************************-->
 <resources>
     <string name="IDS_APP_NAME">PracticaAndroidAvanzado</string>
+    <string name="IDS_WIDGET">App Widget</string>
     <string name="IDS_YES">Yes</string>
     <string name="IDS_NO">No</string>
     <string name="IDS_SETTINGS">Settings</string>

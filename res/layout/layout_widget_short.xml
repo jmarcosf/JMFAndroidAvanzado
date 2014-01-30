@@ -1,0 +1,27 @@
+<!--**************************************************************/
+/*                                                               */ 
+/* layout_widget_short.xml                                       */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: Widget Short Layout                              */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/IDR_LAY_WIDGET"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1dp" >
+
+    <ImageView
+        android:id="@+id/IDP_IMG_WIDGET"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:src="@drawable/img_widget_preview" />
+    
+</RelativeLayout>
+

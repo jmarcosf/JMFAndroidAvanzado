@@ -1,0 +1,20 @@
+<!--**************************************************************/
+/*                                                               */ 
+/* widget_info.xml                                               */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: Widget Info                                      */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="75dp"
+    android:minHeight="75dp"
+    android:updatePeriodMillis="3600000"
+    android:previewImage="@drawable/img_widget_preview"
+    android:initialLayout="@layout/layout_widget_short" >
+</appwidget-provider>
