@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--**************************************************************/
+/*                                                               */ 
+/* analytics.xml                                                 */ 
+/* (c)2014 jmarcosf                                              */ 
+/*                                                               */ 
+/* Description: Google Analytics Definitions                     */ 
+/*              Práctica asignatura Android Avanzado             */ 
+/*              U-Tad - Master Apps                              */ 
+/*              www.u-tad.com                                    */ 
+/*                                                               */ 
+/*        Date: January 2014                                     */ 
+/*                                                               */ 
+/***************************************************************-->
+<resources>
+    <string name="ga_trackingId">UA-47661801-1</string>
+	<item type="bool" name="ga_autoActivityTracking">true</item>
+	<item type="bool" name="ga_reportUncaughtExceptions">true</item>
+	<item type="integer" name="ga_dispatchPeriod">60</item> <!-- seconds -->
+</resources>

@@ -14,7 +14,6 @@
 package com.utad.marcos.jorge.practicaandroidavanzado;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,7 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 /*                                                            */ 
 /*                                                            */ 
 /**************************************************************/
-public class CLocationDetailsActivity extends android.support.v4.app.FragmentActivity
+public class CLocationDetailsActivity extends CBaseActivity
 {
 public static final String IDS_LATITUDE_PARAM     = "LatitudeParam";
 public static final String IDS_LONGITUDE_PARAM    = "LongitudeParam";

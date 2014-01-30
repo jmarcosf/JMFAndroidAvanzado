@@ -13,8 +13,6 @@
 /**************************************************************/
 package com.utad.marcos.jorge.practicaandroidavanzado;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -29,7 +27,7 @@ import android.widget.ImageView;
 /*                                                            */ 
 /*                                                            */ 
 /**************************************************************/
-public class CPictureDetailsActivity extends Activity
+public class CPictureDetailsActivity extends CBaseActivity
 {
 public static final String IDS_PICTURE_PARAM  = "PictureParam";
 

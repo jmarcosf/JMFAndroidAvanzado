@@ -33,6 +33,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -60,9 +61,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 /*                                                            */ 
 /*                                                            */ 
 /**************************************************************/
-public class CMainActivity extends android.support.v4.app.FragmentActivity implements OnClickListener, OnMapClickListener,
-                                                                                      CShakeDetector.OnShakeListener, SensorEventListener,
-                                                                                      LocationListener
+public class CMainActivity extends CBaseActivity implements OnClickListener, OnMapClickListener, SensorEventListener,
+                                                            CShakeDetector.OnShakeListener, LocationListener
 {
 private static final int CAPTURE_PICTURE_REQUEST_CODE  = 100;
 private static final int TEN_SECONDS                   = 10000;
@@ -149,7 +149,7 @@ private String           m_CurrentLocationInfo    = null;
                m_LocationManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, TEN_SECONDS, TEN_METERS, this );
           }
      }
-  
+
      /*********************************************************/
      /*                                                       */ 
      /* CMainActivity.onPause()                               */ 
@@ -188,20 +188,25 @@ private String           m_CurrentLocationInfo    = null;
      @Override
      public boolean onOptionsItemSelected( MenuItem Item )
      {
-     Intent    intent = null;
-     
           switch( Item.getItemId() )
           {
                case R.id.IDM_CAPTURE:
+                    SendEvent( GA_EVENT_CATEGORY_UI_ACTION, GA_EVENT_ACTION_MENUITEM_CLICK, GA_EVENT_MENUITEM_CAPTURE, 0L );
                     CapturePicture();
                     return true;
                     
                case R.id.IDM_DISMISS:
+                    SendEvent( GA_EVENT_CATEGORY_UI_ACTION, GA_EVENT_ACTION_MENUITEM_CLICK, GA_EVENT_MENUITEM_TRASH, 0L );
                     SetControls( false );
                     return true;
                     
                case R.id.IDM_SHARE:
+                    SendEvent( GA_EVENT_CATEGORY_UI_ACTION, GA_EVENT_ACTION_MENUITEM_CLICK, GA_EVENT_MENUITEM_SHARE, 0L );
                     PublishToFacebook();
+                    return true;
+                    
+               case R.id.IDM_SETTINGS:
+                    SendEvent( GA_EVENT_CATEGORY_UI_ACTION, GA_EVENT_ACTION_MENUITEM_CLICK, GA_EVENT_MENUITEM_SETTINGS, 0L );
                     return true;
                     
                default:
@@ -254,10 +259,12 @@ private String           m_CurrentLocationInfo    = null;
           switch( view.getId() )
           {
                case R.id.IDC_IMG_PREVIEW:
+                    SendEvent( GA_EVENT_CATEGORY_UI_ACTION, GA_EVENT_ACTION_BUTTON_CLICK, GA_EVENT_ID_PICTURE_IMAGE, 0L );
                     CapturePicture();
                     break;
                     
                case R.id.IDC_IMG_FACEBOOK:
+                    SendEvent( GA_EVENT_CATEGORY_UI_ACTION, GA_EVENT_ACTION_BUTTON_CLICK, GA_EVENT_ID_FACEBOOK_IMAGE, 0L );
                     PublishToFacebook();
                     break;
           }
@@ -277,6 +284,7 @@ private String           m_CurrentLocationInfo    = null;
      @Override
      public void onMapClick( LatLng location )
      {
+          SendEvent( GA_EVENT_CATEGORY_UI_ACTION, GA_EVENT_ACTION_BUTTON_CLICK, GA_EVENT_ID_MAP_IMAGE, 0L );
           Intent intent = new Intent( CMainActivity.this, CLocationDetailsActivity.class );
           intent.putExtra( CLocationDetailsActivity.IDS_LATITUDE_PARAM, m_CurrentLocation.getLatitude() );
           intent.putExtra( CLocationDetailsActivity.IDS_LONGITUDE_PARAM, m_CurrentLocation.getLongitude() );
@@ -297,6 +305,7 @@ private String           m_CurrentLocationInfo    = null;
      @Override
      public void OnShake( int count )
      {
+          SendEvent( GA_EVENT_CATEGORY_UI_ACTION, GA_EVENT_ACTION_SHAKE_DEVICE, Build.MANUFACTURER + " " + Build.MODEL, 0L );
           SetControls( false );
      }
 

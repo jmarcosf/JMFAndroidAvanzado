@@ -13,7 +13,6 @@
 /**************************************************************/
 package com.utad.marcos.jorge.practicaandroidavanzado;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,7 +37,7 @@ import com.facebook.SessionState;
 /*                                                            */ 
 /*                                                            */ 
 /**************************************************************/
-public class CFacebookActivity extends Activity implements Session.StatusCallback
+public class CFacebookActivity extends CBaseActivity implements Session.StatusCallback
 {
 public  static final String   IDS_PICTURE_PARAM                  = "PictureParam";
 public  static final String   IDS_DEGREES_PARAM                  = "DegreesParam";
@@ -262,6 +261,8 @@ private AlertDialog m_Dialog       = null;
      /*********************************************************/
      private void doLogout( final int resultCode, String ErrorMessage )
      {
+          SendEvent( GA_EVENT_CATEGORY_POST_ACTION, GA_EVENT_ACTION_POST_IMAGE, ( resultCode == RESULT_OK ) ? "" : ErrorMessage, (long)resultCode );
+          
           m_Dialog.dismiss();
           Session session = Session.getActiveSession();
           if( !session.isClosed() ) session.closeAndClearTokenInformation();
