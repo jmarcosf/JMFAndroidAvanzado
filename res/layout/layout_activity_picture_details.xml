@@ -23,6 +23,6 @@
         android:id="@+id/IDC_IMG_PREVIEW"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:adjustViewBounds="true" />
+	    android:scaleType="centerCrop" />
             
 </RelativeLayout>

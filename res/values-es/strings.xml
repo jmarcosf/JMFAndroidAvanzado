@@ -22,7 +22,7 @@
     <string name="IDS_DISMISS">Desechar</string>
     <string name="IDS_HELP">Pulse aquí para tomar una foto.\nSacuda el dispositivo para desechar la foto.\nO utilice las opiones del Menú.</string>
     <string name="IDS_POST_CONFIRMATION_TITLE">Subir a Facebook</string>
-    <string name="IDS_POST_CONFIRMATION_MESSAGE">Vas a subir a Facebook esta foto.\nQuieres continuar?</string>
+    <string name="IDS_POST_CONFIRMATION_MESSAGE">Vas a subir esta foto a Facebook.\n¿Quieres continuar?</string>
     <string name="IDS_POST_TO_FACEBOOK_TITLE">Subir a Facebook</string>
     <string name="IDS_POSTING_TO_FACEBOOK_MESSAGE">Subiendo a Facebook&#8230;</string>
     <string name="IDS_POSTING_INFO_MESSAGE">Subiendo la información de la foto&#8230;</string>

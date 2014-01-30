@@ -193,8 +193,7 @@ private String           m_CurrentLocationInfo    = null;
           switch( Item.getItemId() )
           {
                case R.id.IDM_CAPTURE:
-                    intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
-                    startActivityForResult( intent, CAPTURE_PICTURE_REQUEST_CODE );
+                    CapturePicture();
                     return true;
                     
                case R.id.IDM_DISMISS:
@@ -202,11 +201,7 @@ private String           m_CurrentLocationInfo    = null;
                     return true;
                     
                case R.id.IDM_SHARE:
-                    if( m_CurrentPicture != null )
-                    {
-                         intent = new Intent( this, CFacebookActivity.class);
-                         startActivity( intent );
-                    }
+                    PublishToFacebook();
                     return true;
                     
                default:
@@ -259,50 +254,11 @@ private String           m_CurrentLocationInfo    = null;
           switch( view.getId() )
           {
                case R.id.IDC_IMG_PREVIEW:
-                    if( m_CurrentPicture == null )
-                    {
-                         Intent intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
-                         startActivityForResult( intent, CAPTURE_PICTURE_REQUEST_CODE );
-                    }
-                    else
-                    {
-                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                         m_CurrentPicture.compress( Bitmap.CompressFormat.PNG, 100, stream );
-                         byte[] byteArray = stream.toByteArray();   
-                         
-                         Intent intent = new Intent( this, CPictureDetailsActivity.class );
-                         intent.putExtra( CPictureDetailsActivity.IDS_PICTURE_PARAM, byteArray );
-                         startActivity( intent );
-                    }
+                    CapturePicture();
                     break;
                     
                case R.id.IDC_IMG_FACEBOOK:
-                    if( m_CurrentPicture != null )
-                    {
-                         new AlertDialog.Builder( this )
-                              .setTitle( R.string.IDS_POST_CONFIRMATION_TITLE )
-                              .setMessage( R.string.IDS_POST_CONFIRMATION_MESSAGE )
-                              .setPositiveButton( R.string.IDS_YES, new DialogInterface.OnClickListener()
-                              {
-                                   @Override
-                                   public void onClick( DialogInterface dialogInterface, int i )
-                                   {
-                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                        m_CurrentPicture.compress( Bitmap.CompressFormat.PNG, 100, stream );
-                                        byte[] byteArray = stream.toByteArray();   
-                                        
-                                        Intent intent = new Intent( CMainActivity.this, CFacebookActivity.class );
-                                        intent.putExtra( CFacebookActivity.IDS_PICTURE_PARAM, byteArray );
-                                        intent.putExtra( CFacebookActivity.IDS_DEGREES_PARAM, m_CurrentDegrees );
-                                        intent.putExtra( CFacebookActivity.IDS_DIRECTION_PARAM, m_CompassDirection );
-                                        intent.putExtra( CFacebookActivity.IDS_LOCATION_PARAM, m_CurrentLocationInfo );
-                                        startActivity( intent );
-                                   }
-                              } )
-                              .setNegativeButton( R.string.IDS_NO, null )
-                              .setIcon( R.drawable.image_facebook )
-                              .show();
-                    }
+                    PublishToFacebook();
                     break;
           }
      }
@@ -403,7 +359,7 @@ private String           m_CurrentLocationInfo    = null;
      public void onLocationChanged( Location location )
      {
           m_CurrentLocation = location;
-          new CSetLocationInfo().execute( m_CurrentLocation );
+          if( m_CurrentLocation != null ) new CSetLocationInfo().execute( m_CurrentLocation );
      }
 
      /*********************************************************/
@@ -472,6 +428,65 @@ private String           m_CurrentLocationInfo    = null;
                                  R.string.IDS_WEST, R.string.IDS_NORTH_WEST, R.string.IDS_NORTH };
           int Index = (int)Math.round( ( ( (double)Degrees % 360 ) / 45) );
           m_CompassDirection = getString( DirectionIds[ Index ] );
+     }
+     
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.CapturePicture()                        */ 
+     /*                                                       */ 
+     /*********************************************************/
+     public void CapturePicture()
+     {
+          if( m_CurrentPicture == null )
+          {
+               Intent intent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+               startActivityForResult( intent, CAPTURE_PICTURE_REQUEST_CODE );
+          }
+          else
+          {
+               ByteArrayOutputStream stream = new ByteArrayOutputStream();
+               m_CurrentPicture.compress( Bitmap.CompressFormat.PNG, 100, stream );
+               byte[] byteArray = stream.toByteArray();   
+               
+               Intent intent = new Intent( this, CPictureDetailsActivity.class );
+               intent.putExtra( CPictureDetailsActivity.IDS_PICTURE_PARAM, byteArray );
+               startActivity( intent );
+          }
+     }
+          
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.PublishToFacebook()                     */ 
+     /*                                                       */ 
+     /*********************************************************/
+     public void PublishToFacebook()
+     {
+          if( m_CurrentPicture != null )
+          {
+               new AlertDialog.Builder( this )
+                    .setTitle( R.string.IDS_POST_CONFIRMATION_TITLE )
+                    .setMessage( R.string.IDS_POST_CONFIRMATION_MESSAGE )
+                    .setPositiveButton( R.string.IDS_YES, new DialogInterface.OnClickListener()
+                    {
+                         @Override
+                         public void onClick( DialogInterface dialogInterface, int i )
+                         {
+                              ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                              m_CurrentPicture.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                              byte[] byteArray = stream.toByteArray();   
+                              
+                              Intent intent = new Intent( CMainActivity.this, CFacebookActivity.class );
+                              intent.putExtra( CFacebookActivity.IDS_PICTURE_PARAM, byteArray );
+                              intent.putExtra( CFacebookActivity.IDS_DEGREES_PARAM, m_CurrentDegrees );
+                              intent.putExtra( CFacebookActivity.IDS_DIRECTION_PARAM, m_CompassDirection );
+                              intent.putExtra( CFacebookActivity.IDS_LOCATION_PARAM, m_CurrentLocationInfo );
+                              startActivity( intent );
+                         }
+                    } )
+                    .setNegativeButton( R.string.IDS_NO, null )
+                    .setIcon( R.drawable.image_facebook )
+                    .show();
+          }
      }
      
      /*********************************************************/
