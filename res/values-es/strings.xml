@@ -27,6 +27,7 @@
     <string name="IDS_POSTING_TO_FACEBOOK_MESSAGE">Subiendo a Facebook&#8230;</string>
     <string name="IDS_POSTING_INFO_MESSAGE">Subiendo la información de la foto&#8230;</string>
     <string name="IDS_POSTING_PICTURE_MESSAGE">Subiendo la foto&#8230;</string>    
+    <string name="IDS_POSTING_PICTURE_AND_INFO">Subiendo la foto y sus datos&#8230;</string>
     <string name="IDS_CONNECTING_TO_FACEBOOK_MESSAGE">Conectandog&#8230;</string>
     <string name="IDS_POST_TO_FACEBOOK_SUCCESS">La foto se ha subido a Facebook correctamente!</string>
     

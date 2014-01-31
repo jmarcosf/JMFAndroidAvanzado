@@ -323,7 +323,8 @@ private AlertDialog m_Dialog       = null;
 
                session.requestNewPublishPermissions( request );
           }
-          else doPublishMessage();
+//        else doPublishMessage();
+          else doPublishPictureEx();
      }
 
      /*********************************************************/
@@ -364,6 +365,35 @@ private AlertDialog m_Dialog       = null;
      {
           m_Dialog.setMessage( getString( R.string.IDS_POSTING_PICTURE_MESSAGE ) );
           Request requestPicture = Request.newUploadPhotoRequest( Session.getActiveSession(), m_Picture, new Request.Callback()
+          {
+               @Override
+               public void onCompleted( Response response )
+               {
+                    if( response.getError() == null )
+                    {
+                         doLogout( RESULT_OK, null );
+                    }
+                    else
+                    {
+                         doLogout( RESULT_ERROR_PUBLISHING_PICTURE, response.getError().getErrorMessage() );
+                    }
+               }
+          } );
+          
+          requestPicture.executeAsync();
+     }
+     
+     /*********************************************************/
+     /*                                                       */ 
+     /* CFacebookActivity.doPublishPictureEx()                */ 
+     /*                                                       */ 
+     /*********************************************************/
+     private void doPublishPictureEx()
+     {
+          m_Dialog.setMessage( getString( R.string.IDS_POSTING_PICTURE_AND_INFO ) );
+          String Message = "Picture Info:\n" + m_Location + "\n" + m_Degrees + "º " + m_Direction;
+          
+          Request requestPicture = CMyUploadPhotoRequest.newMyUploadPhotoRequest( Session.getActiveSession(), m_Picture, Message, "", new Request.Callback()
           {
                @Override
                public void onCompleted( Response response )
