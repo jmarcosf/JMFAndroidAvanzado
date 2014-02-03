@@ -6,16 +6,22 @@ La práctica consiste en realizar una aplicación que tome una fotografía y la pub
 
 1) *Diseño general de la interfaz de usuario con Actividades y Fragmentos, utilizando correctamente las vistas XML y los menús*.
 >Actividades:
->>CMainActivity.java              Activiada principal de la aplicación.
+>>CMainActivity.java:             Actividad principal de la aplicación.
+
 >>CPictureDetailsActivity.java:   Detalles de la fotografía.
->>CLocationsDetailsActivity.java: Detalles del mapa de locaclización donde se tomó la fotografía.
+
+>>CLocationDetailsActivity.java:  Detalles del mapa de localización donde se tomó la fotografía.
+
 >>CFacebookActivity.java:         Actividad desde donde se envía la fotografía a Facebook.
+
 >>CWidgetProvider.java            Widget Provider.
+
 >>CMyUploadPhotoRequest.java:     Clase para enviar imagen y datos a Facebook en el mismo Request.
->>CShakeDetector.java:            Listener del sensor que detecta la sacudida del dispositivo.
+
+>>CShakeDetector.java:            Listener de los sensores que detecta la sacudida del dispositivo.
 
 >Menús:
->>Existen botones de menú para tomar una fotografía, para desecharla y para compartirkla en Facebook.
+>>Existen botones de menú para tomar una fotografía, para descartarla y para compartirla en Facebook.
 
 2) *Uso de la cámara para realizar fotografías.*
 >Cuando se pulsa sobre el recuadro de la fotografía o en icono del menú se inicia la cámara con la que se puede tomar la fotografía.
