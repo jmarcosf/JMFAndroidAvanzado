@@ -17,6 +17,7 @@
     <string name="IDS_WIDGET">App Widget</string>
     <string name="IDS_YES">Yes</string>
     <string name="IDS_NO">No</string>
+    <string name="IDS_OK">OK</string>
     <string name="IDS_SETTINGS">Settings</string>
     <string name="IDS_SHARE">Share</string>
     <string name="IDS_FACEBOOK_APP_ID">577674018984013</string>
@@ -32,6 +33,8 @@
     <string name="IDS_POSTING_PICTURE_AND_INFO">Posting picture and info&#8230;</string>
     <string name="IDS_CONNECTING_TO_FACEBOOK_MESSAGE">Connecting&#8230;</string>
     <string name="IDS_POST_TO_FACEBOOK_SUCCESS">Picture posted to Facebook successfully!</string>
+    <string name="IDS_FACEBOOK_ERROR">Facebook Error</string>
+    <string name="IDS_INSTALL_FACEBOOK_MESSAGE">Facebook App not found.\r\nInstall Facebook App on your device first and try again.</string>
     
 	<!--**********************************************************/
 	/*                                                           */ 

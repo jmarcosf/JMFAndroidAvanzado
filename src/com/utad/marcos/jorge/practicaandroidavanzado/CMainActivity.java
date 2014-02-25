@@ -22,6 +22,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -59,6 +61,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 /* CMainActivity Class                                        */ 
 /*                                                            */ 
 /*                                                            */ 
+/*                                                            */ 
+/**************************************************************/
+/**************************************************************/
+/*                                                            */ 
+/* CMainActivity                                               */ 
+/* (c)2014 jmarcosf                                         */ 
+/*                                                            */ 
+/* Description: CMainActivity Class                            */ 
+/*              PracticaAndroidAvanzado Project                       */ 
 /*                                                            */ 
 /**************************************************************/
 public class CMainActivity extends CBaseActivity implements OnClickListener, OnMapClickListener, SensorEventListener,
@@ -462,7 +473,29 @@ private String           m_CurrentLocationInfo    = null;
                startActivity( intent );
           }
      }
+      
+     /*********************************************************/
+     /*                                                       */ 
+     /* CMainActivity.IsFacebookInstalled()                   */ 
+     /*                                                       */ 
+     /*********************************************************/
+     public boolean IsFacebookInstalled()
+     {
+          boolean bInstalled = false;
           
+          try
+          {
+               ApplicationInfo info = getPackageManager().getApplicationInfo( "com.facebook.katana", 0 );
+               bInstalled = true;
+          }
+          catch( PackageManager.NameNotFoundException e )
+          {
+               bInstalled = false;
+          }
+
+          return bInstalled;
+     }
+     
      /*********************************************************/
      /*                                                       */ 
      /* CMainActivity.PublishToFacebook()                     */ 
@@ -470,30 +503,46 @@ private String           m_CurrentLocationInfo    = null;
      /*********************************************************/
      public void PublishToFacebook()
      {
-          if( m_CurrentPicture != null )
+          if( IsFacebookInstalled() )
+          {
+               if( m_CurrentPicture != null )
+               {
+                    new AlertDialog.Builder( this )
+                         .setTitle( R.string.IDS_POST_CONFIRMATION_TITLE )
+                         .setMessage( R.string.IDS_POST_CONFIRMATION_MESSAGE )
+                         .setPositiveButton( R.string.IDS_YES, new DialogInterface.OnClickListener()
+                         {
+                              @Override
+                              public void onClick( DialogInterface dialogInterface, int i )
+                              {
+                                   ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                   m_CurrentPicture.compress( Bitmap.CompressFormat.PNG, 100, stream );
+                                   byte[] byteArray = stream.toByteArray();   
+                                   
+                                   Intent intent = new Intent( CMainActivity.this, CFacebookActivity.class );
+                                   intent.putExtra( CFacebookActivity.IDS_PICTURE_PARAM, byteArray );
+                                   intent.putExtra( CFacebookActivity.IDS_DEGREES_PARAM, m_CurrentDegrees );
+                                   intent.putExtra( CFacebookActivity.IDS_DIRECTION_PARAM, m_CompassDirection );
+                                   intent.putExtra( CFacebookActivity.IDS_LOCATION_PARAM, m_CurrentLocationInfo );
+                                   startActivity( intent );
+                              }
+                         } )
+                         .setNegativeButton( R.string.IDS_NO, null )
+                         .setIcon( R.drawable.image_facebook )
+                         .show();
+               }
+          }
+          else
           {
                new AlertDialog.Builder( this )
-                    .setTitle( R.string.IDS_POST_CONFIRMATION_TITLE )
-                    .setMessage( R.string.IDS_POST_CONFIRMATION_MESSAGE )
-                    .setPositiveButton( R.string.IDS_YES, new DialogInterface.OnClickListener()
+                    .setTitle( R.string.IDS_FACEBOOK_ERROR )
+                    .setMessage( R.string.IDS_INSTALL_FACEBOOK_MESSAGE )
+                    .setPositiveButton( R.string.IDS_OK, new DialogInterface.OnClickListener()
                     {
                          @Override
-                         public void onClick( DialogInterface dialogInterface, int i )
-                         {
-                              ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                              m_CurrentPicture.compress( Bitmap.CompressFormat.PNG, 100, stream );
-                              byte[] byteArray = stream.toByteArray();   
-                              
-                              Intent intent = new Intent( CMainActivity.this, CFacebookActivity.class );
-                              intent.putExtra( CFacebookActivity.IDS_PICTURE_PARAM, byteArray );
-                              intent.putExtra( CFacebookActivity.IDS_DEGREES_PARAM, m_CurrentDegrees );
-                              intent.putExtra( CFacebookActivity.IDS_DIRECTION_PARAM, m_CompassDirection );
-                              intent.putExtra( CFacebookActivity.IDS_LOCATION_PARAM, m_CurrentLocationInfo );
-                              startActivity( intent );
-                         }
+                         public void onClick( DialogInterface dialog, int which ) {}
                     } )
-                    .setNegativeButton( R.string.IDS_NO, null )
-                    .setIcon( R.drawable.image_facebook )
+                    .setIcon( android.R.drawable.ic_dialog_alert )
                     .show();
           }
      }

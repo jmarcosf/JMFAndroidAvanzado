@@ -124,6 +124,7 @@ private AlertDialog m_Dialog       = null;
      {
           super.onActivityResult( requestCode, resultCode, data );
           Session.getActiveSession().onActivityResult( this, requestCode, resultCode, data );
+          if( requestCode == 64206 && resultCode == 0 ) this.finish();
      }
 
      /*********************************************************/

@@ -16,6 +16,7 @@
     <string name="IDS_APP_NAME">PracticaAndroidAvanzado</string>
     <string name="IDS_YES">Si</string>
     <string name="IDS_NO">No</string>
+    <string name="IDS_OK">Aceptar</string>
     <string name="IDS_SETTINGS">Preferencias</string>
     <string name="IDS_SHARE">Compartir</string>
     <string name="IDS_CAPTURE">Capturar</string>
@@ -30,6 +31,8 @@
     <string name="IDS_POSTING_PICTURE_AND_INFO">Subiendo la foto y sus datos&#8230;</string>
     <string name="IDS_CONNECTING_TO_FACEBOOK_MESSAGE">Conectandog&#8230;</string>
     <string name="IDS_POST_TO_FACEBOOK_SUCCESS">La foto se ha subido a Facebook correctamente!</string>
+    <string name="IDS_FACEBOOK_ERROR">Error en Facebook</string>
+    <string name="IDS_INSTALL_FACEBOOK_MESSAGE">No se ha encontrado al App de Facebook.\r\nInstálela en su dispositivo primero e inténtelo de nuevo.</string>
     
 	<!--**********************************************************/
 	/*                                                           */ 
